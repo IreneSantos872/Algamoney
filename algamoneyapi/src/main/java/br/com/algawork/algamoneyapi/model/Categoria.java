@@ -19,6 +19,14 @@ public class Categoria {
         this.nome = nome;
     }
 
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
+
     @Override
     public boolean equals(Object obj){
         if(this == obj)
@@ -28,9 +36,7 @@ public class Categoria {
         if(getClass() != obj.getClass())
             return false;
         Categoria other = (Categoria) obj;
-        if(codigo == null )
-            return false;
-        return true;
+        return codigo != null;
     }
 
     @Override
