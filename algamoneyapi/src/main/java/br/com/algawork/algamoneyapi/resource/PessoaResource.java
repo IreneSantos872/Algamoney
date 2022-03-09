@@ -4,6 +4,7 @@ import br.com.algawork.algamoneyapi.event.RecursoCriadoEvent;
 import br.com.algawork.algamoneyapi.model.Categoria;
 import br.com.algawork.algamoneyapi.model.Pessoa;
 import br.com.algawork.algamoneyapi.repository.PessoaRepository;
+import br.com.algawork.algamoneyapi.service.PessoaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -30,6 +31,9 @@ public class PessoaResource {
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowired
+    private PessoaService pessoaService;
+
     @GetMapping
     public List<Pessoa> listar(){
         return pessoaRepository.findAll();
@@ -55,13 +59,15 @@ public class PessoaResource {
     }
 
     @PutMapping("/{codigo}")
-    public Pessoa atualizar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
-        Pessoa pessoaSalva = pessoaRepository.findById(codigo).orElseThrow(()-> new EmptyResultDataAccessException(1));
-        BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
-
-        return this.pessoaRepository.save(pessoaSalva);
-
+    public ResponseEntity<Pessoa> atualizar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
+        Pessoa pessoaSalva = pessoaService.atualizar(codigo, pessoa);
+        return ResponseEntity.ok(pessoaSalva);
     }
 
+    @PutMapping("/{codigo}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarPropriedadeAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo){
+        pessoaService.atualizarPropriedadeAtivo(codigo, ativo);
+    }
 
 }
