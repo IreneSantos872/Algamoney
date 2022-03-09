@@ -4,6 +4,7 @@ import br.com.algawork.algamoneyapi.event.RecursoCriadoEvent;
 import br.com.algawork.algamoneyapi.exceptionhandler.AlgamoneyExceptionHandler;
 import br.com.algawork.algamoneyapi.model.Lancamento;
 import br.com.algawork.algamoneyapi.repository.LancamentoRepository;
+import br.com.algawork.algamoneyapi.repository.filter.LancamentoFilter;
 import br.com.algawork.algamoneyapi.service.LancamentoService;
 import br.com.algawork.algamoneyapi.service.exception.PessoaInexistenteOuInativaException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -40,8 +41,8 @@ public class LancamentoResource {
     private MessageSource messageSource;
 
     @GetMapping
-    public List<Lancamento> listar(){
-        return lancamentoRepository.findAll();
+    public List<Lancamento> pesquisar(LancamentoFilter lancamentoFilter){
+        return lancamentoRepository.filtrar(lancamentoFilter);
     }
 
     @GetMapping("/{codigo}")
@@ -57,6 +58,12 @@ public class LancamentoResource {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
 
+    }
+
+    @DeleteMapping("/{codigo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long codigo){
+        lancamentoRepository.deleteById(codigo);
     }
 
     @ExceptionHandler({PessoaInexistenteOuInativaException.class})
